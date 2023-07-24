@@ -5,6 +5,8 @@ import LandingPage from "./components/landingPage/landingPage";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createContext, useState } from "react";
 import PatientList from "./components/list/patientList";
+import NewPatient from "./components/newPatient/newPatient";
+import OldPatient from "./components/oldPatient/oldPatient";
 
 export const tokenStorage = createContext();
 
@@ -15,9 +17,11 @@ function App() {
       <tokenStorage.Provider value={[token, setToken]}>
         <BrowserRouter>
           <Routes>
-            <Route path="/" element={<LandingPage />} />
-            <Route path="/login" element={<LoginForm />} />
+            <Route path="/" element={<LoginForm />} />
+            <Route path="/home" element={<LandingPage />} />
+            <Route path="/newPatient" element={<NewPatient />} />
             <Route path="/list" element={<PatientList />} />
+            <Route path="/followup" element={<OldPatient />} />
           </Routes>
         </BrowserRouter>
       </tokenStorage.Provider>

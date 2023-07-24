@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useContext } from "react";
 import { TextField, Button, Typography, Container, Paper } from "@mui/material";
 import { styled } from "@mui/material/styles";
 import { useForm } from "react-hook-form";
@@ -6,6 +6,7 @@ import "./login.css";
 import backgroundImage from "../../assets/loginBack.jpg";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { tokenStorage } from "../../App";
 
 const LoginContainer = styled(Container)({
   display: "flex",
@@ -30,6 +31,7 @@ const Form = styled("form")({
 });
 
 const LoginForm = () => {
+  const [token, setToken] = useContext(tokenStorage);
   const {
     register,
     handleSubmit,
@@ -40,8 +42,11 @@ const LoginForm = () => {
 
   const onSubmit = async (data) => {
     try {
-      await axios.post("http://localhost:8081/login", data);
-      navigate("/");
+      const response = await axios.post("http://localhost:8081/login", data);
+      setToken(response.data.token);
+      console.log(token);
+      navigate("/home");
+      // console.log("login response==>", response.data);
     } catch (error) {
       console.error(error);
     }

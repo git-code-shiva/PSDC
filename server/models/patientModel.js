@@ -13,6 +13,9 @@ const patientModel = new mongoose.Schema(
       type: String,
       required: true,
     },
+    age: {
+      type: Number,
+    },
     city: {
       type: String,
     },

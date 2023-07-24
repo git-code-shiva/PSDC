@@ -1,0 +1,7 @@
+.header_container {
+  display: flex;
+  height: 55px;
+  background-color: rgb(31, 31, 31);
+  justify-content: space-between;
+  padding: 5px 15px 0 15px;
+}

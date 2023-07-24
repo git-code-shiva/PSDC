@@ -86,16 +86,31 @@ router.post("/login", async (req, res) => {
 });
 
 //patient route
+const Patient = require("../models/patientModel");
+
 router.post("/create/patient", async (req, res) => {
   try {
-    const newPatient = await patientModel.create({
+    // Check if a patient with the same name and mobile already exists
+    const existingPatient = await Patient.findOne({
+      patientName: req.body.patientName,
+      mobile: req.body.mobile,
+    });
+
+    if (existingPatient) {
+      return res.status(409).json({ message: "Patient already exists" });
+    }
+
+    // If the patient does not exist, create a new patient
+    const newPatient = await Patient.create({
       referalDoc: req.body.referalDoc,
       patientName: req.body.patientName,
       city: req.body.city,
       address: req.body.address,
       mobile: req.body.mobile,
       gender: req.body.gender,
+      age: req.body.age,
     });
+
     return res
       .status(201)
       .json({ message: "Patient created successfully", patient: newPatient });
@@ -113,4 +128,40 @@ router.get("/getAll/patients", async (req, res) => {
   }
 });
 
+router.put("/edit/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const event = await patientModel.findOneAndUpdate({ _id: id }, req.body, {
+      new: true,
+    });
+    if (event) {
+      return res.status(200).json({
+        message: "Updated Sucessfully",
+      });
+    } else {
+      return res.status(404).json({
+        message: "There is no patient with this id",
+      });
+    }
+  } catch (error) {
+    return res.status(404).json({
+      message: error.message,
+    });
+  }
+});
+
+router.delete("/delete/:id", async (req, res) => {
+  const { id } = req.params;
+  const event = await patientModel.findByIdAndDelete(id);
+
+  if (event) {
+    return res.status(200).json({
+      message: "deleted sucessfully",
+    });
+  } else {
+    return res.status(400).json({
+      message: "patient not found",
+    });
+  }
+});
 module.exports = router;
