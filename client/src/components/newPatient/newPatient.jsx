@@ -144,7 +144,7 @@ const NewPatient = () => {
               <ErrorMessage>{errors.mobile.message}</ErrorMessage>
             )}
             <Button type="submit" variant="contained" color="primary">
-              Save
+              Continue
             </Button>
           </Form>
         </FormPaper>

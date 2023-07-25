@@ -5,3 +5,7 @@
   justify-content: space-between;
   padding: 5px 15px 0 15px;
 }
+.left_container {
+  display: flex;
+  gap: 15px;
+}

@@ -44,9 +44,9 @@ const LandingPage = () => {
               </Button>
             </Link>
 
-            <Link to="/followup">
+            <Link to="/list">
               <Button variant="contained" sx={buttonStyle}>
-                Follow-up Patient
+                Follow-up Patients
               </Button>
             </Link>
           </CenteredDiv>

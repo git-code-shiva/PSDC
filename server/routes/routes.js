@@ -128,6 +128,65 @@ router.get("/getAll/patients", async (req, res) => {
   }
 });
 
+//search by name
+router.get("/searchByName/:name", async (req, res) => {
+  try {
+    const { name } = req.params;
+    const patients = await patientModel.find({
+      patientName: { $regex: new RegExp(name, "i") },
+    });
+
+    if (patients.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No patients found with the given name." });
+    }
+
+    res.status(200).json(patients);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error searching patients by name.", error });
+  }
+});
+
+//search by mobile
+router.get("/searchByMobile/:mobile", async (req, res) => {
+  try {
+    const { mobile } = req.params;
+    const patients = await patientModel.find({ mobile });
+
+    if (patients.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No patients found with the given mobile number." });
+    }
+
+    res.status(200).json(patients);
+  } catch (error) {
+    res
+      .status(500)
+      .json({ message: "Error searching patients by mobile.", error });
+  }
+});
+
+//search by id
+router.get("/searchById/:id", async (req, res) => {
+  try {
+    const { id } = req.params;
+    const patients = await patientModel.find({ _id: id });
+
+    if (patients.length === 0) {
+      return res
+        .status(404)
+        .json({ message: "No patients found with this given id" });
+    }
+    res.status(200).json(patients);
+  } catch (error) {
+    res.status(500).json({ message: "Error searching patients by id", error });
+  }
+});
+
 router.put("/edit/:id", async (req, res) => {
   try {
     const { id } = req.params;
