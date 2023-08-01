@@ -14,6 +14,7 @@ import {
   Select,
   MenuItem,
 } from "@mui/material";
+import SearchIcon from "@mui/icons-material/Search"; // Added search icon here
 import { styled } from "@mui/material/styles";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -25,12 +26,12 @@ import { toast, ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { tokenStorage } from "../../App";
 import { useNavigate } from "react-router-dom";
-
-const StyledContainer = styled("div")({
-  padding: "0 16px", // Add left and right padding to the page
-  overflowX: "auto", // Enable horizontal scrollbar when content overflows
-  overflowY: "auto",
-});
+import {
+  Search,
+  SearchIconWrapper,
+  StyledContainer,
+  StyledInputBase,
+} from "./listStyleFunc";
 
 const StyledTableContainer = styled(TableContainer)({
   maxWidth: "100%", // Ensure the table container takes full width
@@ -48,6 +49,8 @@ const PatientList = () => {
   const [editedPatients, setEditedPatients] = useState({});
   const [saveAction, setSaveAction] = useState(false);
   const [token] = useContext(tokenStorage);
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedSearchField, setSelectedSearchField] = useState("patientName");
 
   const navigate = useNavigate();
 
@@ -174,10 +177,63 @@ const PatientList = () => {
     });
   };
 
+  const handleSearchQueryChange = (event) => {
+    setSearchQuery(event.target.value);
+  };
+
+  const handleSelectedSearchFieldChange = (event) => {
+    setSelectedSearchField(event.target.value);
+  };
+
+  const filterPatients = () => {
+    const query = searchQuery.toLowerCase();
+    return patients.filter((patient) => {
+      const field = patient[selectedSearchField];
+      if (selectedSearchField === "mobile" || selectedSearchField === "id") {
+        // For "Mobile" and "ID" fields, we check for an exact match
+        return field.toString() === query;
+      } else {
+        // For "Name" field, we use partial match (if it's a string)
+        return typeof field === "string" && field.toLowerCase().includes(query);
+      }
+    });
+  };
+
+  const filteredPatients = filterPatients();
+
   if (token) {
     return (
       <>
         <Header />
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "flex-end",
+            marginRight: "55px",
+            marginTop: "5px",
+          }}
+        >
+          <Search>
+            <SearchIconWrapper>
+              <SearchIcon />
+            </SearchIconWrapper>
+            <StyledInputBase
+              placeholder="Search…"
+              inputProps={{ "aria-label": "search" }}
+              onChange={handleSearchQueryChange}
+            />
+          </Search>
+
+          <Select
+            value={selectedSearchField}
+            onChange={handleSelectedSearchFieldChange}
+            sx={{ marginLeft: "5px", backgroundColor: "white", height: "40px" }}
+          >
+            <MenuItem value="patientName">Name</MenuItem>
+            <MenuItem value="mobile">Mobile</MenuItem>
+            <MenuItem value="id">ID</MenuItem>
+          </Select>
+        </div>
         <StyledContainer>
           <h1>Patients List</h1>
           {loading ? (
@@ -287,7 +343,7 @@ const PatientList = () => {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {patients.map((patient, index) => (
+                  {filteredPatients.map((patient, index) => (
                     <StyledTableRow
                       key={patient._id}
                       style={{

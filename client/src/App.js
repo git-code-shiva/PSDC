@@ -6,6 +6,7 @@ import { BrowserRouter, Route, Routes } from "react-router-dom";
 import { createContext, useState } from "react";
 import PatientList from "./components/list/patientList";
 import NewPatient from "./components/newPatient/newPatient";
+import DeepSearch from "./components/deepSearch/deepSearch";
 
 export const tokenStorage = createContext();
 
@@ -20,6 +21,7 @@ function App() {
             <Route path="/home" element={<LandingPage />} />
             <Route path="/newPatient" element={<NewPatient />} />
             <Route path="/list" element={<PatientList />} />
+            <Route path="/dSearch" element={<DeepSearch />} />
           </Routes>
         </BrowserRouter>
       </tokenStorage.Provider>
